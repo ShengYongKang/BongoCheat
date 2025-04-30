@@ -62,6 +62,6 @@ int main()
     // 关闭进程句柄
     CloseHandle(hProcess);
     std::wcout << L"[MISSION COMPLETED]." << std::endl;
-
+    system("pause");
     return 0;
 }
