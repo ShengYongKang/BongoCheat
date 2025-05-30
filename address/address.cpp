@@ -4,7 +4,7 @@
 
 uintptr_t GetBaseAddressTotalClicks(uintptr_t& addr_rest_clicks, DWORD pid, HANDLE hProcess)
 {
-    uintptr_t baseAddress = GetModuleBaseAddress(pid, L"UnityPlayer.dll");
+    uintptr_t baseAddress = GetModuleBaseAddress(pid, L"mono-2.0-bdwgc.dll");
     if (baseAddress == 0)
     {
         std::wcout << L"[ERROR]:Failed getting TotalClicks address." << std::endl;
@@ -12,14 +12,13 @@ uintptr_t GetBaseAddressTotalClicks(uintptr_t& addr_rest_clicks, DWORD pid, HAND
     }
 
     // 加上基址偏移
-    uintptr_t currentAddress = baseAddress + 0x01EFDE50;
+    uintptr_t currentAddress = baseAddress + 0x0073CBC0;
 
     // 逐级指针偏移
+    currentAddress = ReadMemory<uintptr_t>(hProcess, (LPVOID)currentAddress) + 0xA0;
+    currentAddress = ReadMemory<uintptr_t>(hProcess, (LPVOID)currentAddress) + 0x80;
     currentAddress = ReadMemory<uintptr_t>(hProcess, (LPVOID)currentAddress) + 0x38;
-    currentAddress = ReadMemory<uintptr_t>(hProcess, (LPVOID)currentAddress) + 0x18;
-    currentAddress = ReadMemory<uintptr_t>(hProcess, (LPVOID)currentAddress) + 0x0;
     currentAddress = ReadMemory<uintptr_t>(hProcess, (LPVOID)currentAddress) + 0x20;
-    currentAddress = ReadMemory<uintptr_t>(hProcess, (LPVOID)currentAddress) + 0x40;
     currentAddress = ReadMemory<uintptr_t>(hProcess, (LPVOID)currentAddress) + 0x38;
     addr_rest_clicks = currentAddress;
     // 输出最终地址
